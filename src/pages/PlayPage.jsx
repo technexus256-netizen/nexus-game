@@ -22,14 +22,14 @@ export default function PlayPage({ game: g, GameComp, onBack, onScore, similar, 
     <div style={{ maxWidth:1100, margin:'0 auto', padding:'24px 20px 60px' }}>
 
       {/* Breadcrumb */}
-      <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:20, fontFamily:"'Exo 2',sans-serif", fontSize:13, color:'#64748B' }}>
+      <div  style={{ display:'flex', alignItems:'center', gap:8, marginBottom:20, fontFamily:"'Exo 2',sans-serif", fontSize:13, color:'#64748B' }}>
         <span onClick={onBack} style={{ cursor:'pointer', color:'#A78BFA' }}>🏠 Home</span>
         <span>›</span>
         <span style={{ color:'#fff' }}>{g.title}</span>
       </div>
 
       {/* Two-column layout */}
-      <div style={{ display:'grid', gridTemplateColumns:'1fr minmax(0,360px)', gap:24, alignItems:'start' }}>
+      <div className='responsive-flex'>
 
         {/* ── Left: game canvas ─────────────────── */}
         <div>
