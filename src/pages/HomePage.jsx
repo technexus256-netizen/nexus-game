@@ -252,9 +252,6 @@ export default function HomePage({ db, allDb, search, category, setCategory, onP
                 🎮 More Games
                 <span style={{ background:'rgba(255,255,255,0.2)', borderRadius:8, padding:'2px 10px', fontSize:14 }}>+{db.length - INITIAL_SHOW}</span>
               </button>
-              <p style={{ fontFamily:"'Exo 2',sans-serif", color:'#475569', fontSize:12, marginTop:14 }}>
-                or <span onClick={() => setPage && setPage('games')} style={{ color:'#A78BFA', cursor:'pointer', textDecoration:'underline' }}>browse all games →</span>
-              </p>
             </div>
           ) : (
             <button onClick={() => { setShowAll(false); document.getElementById('games-section')?.scrollIntoView({ behavior:'smooth' }); }}
