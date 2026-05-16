@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import logo from '../assest/img/logo-gamin.png'
 
 const NAV_LINKS = [
   { icon: '🏠', label: 'Home',        key: 'home'        },
@@ -85,6 +86,7 @@ export default function Navbar({ page, setPage, search, setSearch, user, onLogin
             style={{ display:'flex', alignItems:'center', gap:9, cursor:'pointer', flexShrink:0, marginRight:8 }}
           >
             <span style={{ fontSize:28 }} className="float-anim">🎮</span>
+            {/* <img src={logo} alt="logo" style={{width: "80px"}} /> */}
             <div>
               <div
                 className="neon-text"

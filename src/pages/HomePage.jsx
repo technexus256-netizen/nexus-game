@@ -252,9 +252,6 @@ export default function HomePage({ db, allDb, search, category, setCategory, onP
                 🎮 More Games
                 <span style={{ background:'rgba(255,255,255,0.2)', borderRadius:8, padding:'2px 10px', fontSize:14 }}>+{db.length - INITIAL_SHOW}</span>
               </button>
-              <p style={{ fontFamily:"'Exo 2',sans-serif", color:'#475569', fontSize:12, marginTop:14 }}>
-                or <span onClick={() => setPage && setPage('games')} style={{ color:'#A78BFA', cursor:'pointer', textDecoration:'underline' }}>browse all games →</span>
-              </p>
             </div>
           ) : (
             <button onClick={() => { setShowAll(false); document.getElementById('games-section')?.scrollIntoView({ behavior:'smooth' }); }}
@@ -313,7 +310,7 @@ export default function HomePage({ db, allDb, search, category, setCategory, onP
 
         {/* Write a review CTA */}
         <div style={{ textAlign:'center', padding:'24px 24px 8px' }}>
-          <button onClick={() => setPage && setPage('contact')}
+          <button onClick={() => alert("working")}
             style={{ background:'transparent', border:'1px solid rgba(124,58,237,0.4)', borderRadius:12, padding:'11px 28px', color:'#A78BFA', fontFamily:"'Exo 2',sans-serif", fontWeight:700, fontSize:14, cursor:'pointer', transition:'all 0.2s' }}
             onMouseEnter={e => e.currentTarget.style.background='rgba(124,58,237,0.15)'}
             onMouseLeave={e => e.currentTarget.style.background='transparent'}
