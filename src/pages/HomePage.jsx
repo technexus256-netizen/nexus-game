@@ -313,7 +313,7 @@ export default function HomePage({ db, allDb, search, category, setCategory, onP
 
         {/* Write a review CTA */}
         <div style={{ textAlign:'center', padding:'24px 24px 8px' }}>
-          <button onClick={() => setPage && setPage('contact')}
+          <button onClick={() => alert("working")}
             style={{ background:'transparent', border:'1px solid rgba(124,58,237,0.4)', borderRadius:12, padding:'11px 28px', color:'#A78BFA', fontFamily:"'Exo 2',sans-serif", fontWeight:700, fontSize:14, cursor:'pointer', transition:'all 0.2s' }}
             onMouseEnter={e => e.currentTarget.style.background='rgba(124,58,237,0.15)'}
             onMouseLeave={e => e.currentTarget.style.background='transparent'}

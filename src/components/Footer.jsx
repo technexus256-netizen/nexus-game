@@ -86,7 +86,7 @@ export default function Footer({ onNav }) {
       `}</style>
 
       {/* ── Top band: newsletter ─────────────────────── */}
-      <div style={{ background:'linear-gradient(135deg,rgba(124,58,237,0.15),rgba(236,72,153,0.1))', borderBottom:'1px solid rgba(124,58,237,0.15)', padding:'28px 24px' }}>
+      <div style={{display:"none", background:'linear-gradient(135deg,rgba(124,58,237,0.15),rgba(236,72,153,0.1))', borderBottom:'1px solid rgba(124,58,237,0.15)', padding:'28px 24px' }}>
         <div style={{ maxWidth:1280, margin:'0 auto', display:'flex', alignItems:'center', justifyContent:'space-between', gap:20, flexWrap:'wrap' }}>
           <div>
             <h3 style={{ fontFamily:"'Fredoka One',cursive", fontSize:'clamp(18px,3vw,24px)', color:'#fff', marginBottom:4 }}>
@@ -146,7 +146,7 @@ export default function Footer({ onNav }) {
             </div>
 
             {/* Socials */}
-            <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
+            <div style={{ display:'none', gap:8, flexWrap:'wrap' }}>
               {SOCIALS.map(s => (
                 <div key={s.label} className="ft-social" title={s.label} style={{ color:s.color }}>
                   {s.icon}
@@ -171,7 +171,7 @@ export default function Footer({ onNav }) {
           <div>
             <div className="ft-col-title">Platform Stats</div>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:20 }}>
-              {[['9','Games'],['HTML5','Engine'],['Free','Forever'],['0','Downloads'],['9+','Categories'],['100%','Kid Safe']].map(([v,l]) => (
+              {[['25','Games'],['HTML5','Engine'],['Free','Forever'],['0','Downloads'],['25+','Categories'],['100%','Kid Safe']].map(([v,l]) => (
                 <div key={l} style={{ background:'rgba(124,58,237,0.08)', border:'1px solid rgba(124,58,237,0.15)', borderRadius:10, padding:'10px 12px', textAlign:'center' }}>
                   <div style={{ fontFamily:"'Fredoka One',cursive", fontSize:18, background:'linear-gradient(135deg,#A78BFA,#EC4899)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>{v}</div>
                   <div style={{ fontFamily:"'Exo 2',sans-serif", fontSize:10, color:'#64748B', marginTop:2 }}>{l}</div>
@@ -192,7 +192,7 @@ export default function Footer({ onNav }) {
         </div>
 
         {/* ── Games tag cloud ──────────────────────── */}
-        <div style={{ marginTop:40, paddingTop:28, borderTop:'1px solid rgba(124,58,237,0.12)' }}>
+        <div style={{ marginTop:40, paddingTop:28, borderTop:'1px solid rgba(124,58,237,0.12)', display: "none" }}>
           <div style={{ fontFamily:"'Exo 2',sans-serif", fontSize:12, color:'#374151', marginBottom:12, fontWeight:700, letterSpacing:1, textTransform:'uppercase' }}>
             Playable Games on Platform
           </div>
@@ -206,11 +206,11 @@ export default function Footer({ onNav }) {
         </div>
 
         {/* ── Bottom bar ───────────────────────────── */}
-        <div style={{ marginTop:28, paddingTop:20, borderTop:'1px solid rgba(255,255,255,0.05)', display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:12 }}>
+        <div style={{ marginTop:28, paddingTop:20, borderTop:'1px solid rgba(255,255,255,0.05)', display:'flex', justifyContent:'center', alignItems:'center', flexWrap:'wrap', gap:12 }}>
           <p style={{ fontFamily:"'Exo 2',sans-serif", fontSize:12, color:'#374151' }}>
             © {year} Nexus Play. Made with ❤️ for gamers everywhere. All rights reserved.
           </p>
-          <div style={{ display:'flex', gap:16 }}>
+          <div style={{ display:'none', gap:16 }}>
             {['Privacy','Terms','Cookies','Sitemap'].map(t => (
               <span key={t} style={{ fontFamily:"'Exo 2',sans-serif", fontSize:11, color:'#374151', cursor:'pointer', transition:'color 0.2s' }}
                 onMouseEnter={e => e.target.style.color='#A78BFA'}
