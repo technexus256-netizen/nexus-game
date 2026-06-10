@@ -1,7 +1,135 @@
 import { useState, useEffect, useRef } from 'react';
 import { HOW_TO_PLAY } from '../data/gamesData';
+import { getReviewsForGame, addReview } from '../firebase';
 
-export default function PlayPage({ game: g, GameComp, onBack, onScore, similar, onPlay, fullscreen, setFullscreen, favorites, onFav, bestScore }) {
+/* ── Star display ───────────────────────────────────────────────────── */
+function Stars({ n, size = 14 }) {
+  return (
+    <span>
+      {[1,2,3,4,5].map(i => (
+        <span key={i} style={{ color: i <= n ? '#F59E0B' : '#334155', fontSize: size }}>★</span>
+      ))}
+    </span>
+  );
+}
+
+/* ── Reviews panel (per game, stored in Firebase) ───────────────────── */
+function ReviewsPanel({ game: g, user, onReviewAdded }) {
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [stars,   setStars]   = useState(5);
+  const [text,    setText]    = useState('');
+  const [saving,  setSaving]  = useState(false);
+  const [error,   setError]   = useState('');
+
+  const load = () => {
+    setLoading(true);
+    getReviewsForGame(g.id)
+      .then(setReviews)
+      .catch(() => setReviews([]))
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => { load(); /* eslint-disable-next-line */ }, [g.id]);
+
+  const submit = async () => {
+    if (!text.trim()) { setError('Please write a few words.'); return; }
+    setSaving(true);
+    setError('');
+    try {
+      await addReview({
+        gameId:    g.id,
+        gameTitle: g.title,
+        userName:  user?.displayName || 'Player',
+        userPhoto: user?.photoURL || '',
+        stars,
+        text,
+      });
+      setText('');
+      setStars(5);
+      load();
+      onReviewAdded && onReviewAdded();
+    } catch {
+      setError('Could not save your review. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const avg = reviews.length
+    ? (reviews.reduce((s, r) => s + (r.stars || 0), 0) / reviews.length).toFixed(1)
+    : g.rating;
+
+  return (
+    <div style={{ marginTop:16, background:'rgba(15,12,41,0.7)', border:'1px solid rgba(124,58,237,0.15)', borderRadius:16, padding:20 }}>
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14, flexWrap:'wrap', gap:8 }}>
+        <h3 style={{ fontFamily:"'Fredoka One',cursive", fontSize:16, color:'#A78BFA', margin:0 }}>
+          ⭐ Player Reviews <span style={{ color:'#64748B', fontSize:13 }}>({reviews.length})</span>
+        </h3>
+        <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+          <span style={{ fontFamily:"'Fredoka One',cursive", fontSize:20, color:'#F59E0B' }}>{avg}</span>
+          <Stars n={Math.round(avg)} />
+        </div>
+      </div>
+
+      {/* Write a review */}
+      <div style={{ background:'rgba(124,58,237,0.06)', border:'1px solid rgba(124,58,237,0.18)', borderRadius:12, padding:16, marginBottom:18 }}>
+        <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:10 }}>
+          <span style={{ fontFamily:"'Exo 2',sans-serif", fontSize:13, fontWeight:700, color:'#CBD5E1' }}>Your rating:</span>
+          <span style={{ cursor:'pointer' }}>
+            {[1,2,3,4,5].map(i => (
+              <span key={i} onClick={() => setStars(i)}
+                style={{ color: i <= stars ? '#F59E0B' : '#334155', fontSize:22, transition:'color 0.15s' }}>★</span>
+            ))}
+          </span>
+        </div>
+        <textarea
+          value={text}
+          onChange={e => setText(e.target.value)}
+          placeholder={`Share your thoughts on ${g.title}…`}
+          rows={3}
+          style={{ width:'100%', resize:'vertical', background:'rgba(4,8,20,0.7)', border:'1px solid rgba(124,58,237,0.25)', borderRadius:10, padding:'10px 12px', color:'#fff', fontSize:13, fontFamily:"'Exo 2',sans-serif", boxSizing:'border-box' }}
+        />
+        {error && <p style={{ color:'#F87171', fontSize:12, fontFamily:"'Exo 2',sans-serif", margin:'8px 0 0' }}>⚠️ {error}</p>}
+        <button
+          onClick={submit}
+          disabled={saving}
+          style={{ marginTop:10, background:'linear-gradient(135deg,#7C3AED,#EC4899)', border:'none', borderRadius:10, padding:'9px 22px', color:'#fff', fontFamily:"'Fredoka One',cursive", fontSize:14, cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1 }}
+        >
+          {saving ? 'Posting…' : '✏️ Post Review'}
+        </button>
+      </div>
+
+      {/* Existing reviews */}
+      {loading ? (
+        <p style={{ fontFamily:"'Exo 2',sans-serif", fontSize:13, color:'#64748B' }}>Loading reviews…</p>
+      ) : reviews.length === 0 ? (
+        <p style={{ fontFamily:"'Exo 2',sans-serif", fontSize:13, color:'#64748B' }}>No reviews yet — be the first to review {g.title}!</p>
+      ) : (
+        <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
+          {reviews.map(r => (
+            <div key={r.id} style={{ background:'rgba(4,8,20,0.5)', border:'1px solid rgba(124,58,237,0.12)', borderRadius:12, padding:14 }}>
+              <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:6 }}>
+                <div style={{ width:34, height:34, borderRadius:'50%', background:'linear-gradient(135deg,rgba(124,58,237,0.3),rgba(236,72,153,0.3))', border:'2px solid rgba(124,58,237,0.4)', display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden', flexShrink:0 }}>
+                  {r.userPhoto
+                    ? <img src={r.userPhoto} alt="" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+                    : <span style={{ fontSize:16 }}>🎮</span>}
+                </div>
+                <div style={{ flex:1 }}>
+                  <div style={{ fontFamily:"'Exo 2',sans-serif", fontWeight:700, fontSize:13, color:'#E2E8F0' }}>{r.userName}</div>
+                  <Stars n={r.stars} size={12} />
+                </div>
+              </div>
+              <p style={{ fontFamily:"'Exo 2',sans-serif", fontSize:13, color:'#94A3B8', lineHeight:1.6, margin:0 }}>{r.text}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function PlayPage({ game: g, GameComp, onBack, onScore, similar, onPlay, fullscreen, setFullscreen, favorites, onFav, bestScore, user, onReviewAdded }) {
   const [liveScore, setLiveScore] = useState(0);
   const fsRef = useRef(null);
 
@@ -22,14 +150,14 @@ export default function PlayPage({ game: g, GameComp, onBack, onScore, similar, 
     <div style={{ maxWidth:1100, margin:'0 auto', padding:'24px 20px 60px' }}>
 
       {/* Breadcrumb */}
-      <div  style={{ display:'flex', alignItems:'center', gap:8, marginBottom:20, fontFamily:"'Exo 2',sans-serif", fontSize:13, color:'#64748B' }}>
+      <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:20, fontFamily:"'Exo 2',sans-serif", fontSize:13, color:'#64748B' }}>
         <span onClick={onBack} style={{ cursor:'pointer', color:'#A78BFA' }}>🏠 Home</span>
         <span>›</span>
         <span style={{ color:'#fff' }}>{g.title}</span>
       </div>
 
       {/* Two-column layout */}
-      <div className='responsive-flex'>
+      <div style={{ display:'grid', gridTemplateColumns:'1fr minmax(0,360px)', gap:24, alignItems:'start' }}>
 
         {/* ── Left: game canvas ─────────────────── */}
         <div>
@@ -78,6 +206,9 @@ export default function PlayPage({ game: g, GameComp, onBack, onScore, similar, 
               ))}
             </div>
           </div>
+
+          {/* Reviews */}
+          <ReviewsPanel game={g} user={user} onReviewAdded={onReviewAdded} />
         </div>
 
         {/* ── Right: sidebar ────────────────────── */}

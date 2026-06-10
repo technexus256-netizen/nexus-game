@@ -1,13 +1,25 @@
 import { useState, useRef } from 'react';
 import GameCard from '../components/GameCard';
+import FeaturedBanner from '../components/FeaturedBanner';
 import { CATEGORIES } from '../data/gamesData';
 
-const INITIAL_SHOW = 12;
+const INITIAL_SHOW = 12; // show 12 in the grid, rest behind "More Games"
 
 /* ── Curated sections ───────────────────────────────────────────────── */
-const KIDS_IDS     = ['snake','flappy','memory','whackmole','bubble','rps','reaction','breakout'];
-const LEARNING_IDS = ['typing','mathblitz','hangman','colorrush','numberguess','simon'];
-const STRATEGY_IDS = ['chess','connect4','minesweeper','g2048','tictactoe','blackjack'];
+/* Education is featured first; user-skill games up top, AI-opponent games
+   are grouped into their own section lower down. */
+const LEARNING_IDS = ['brainquiz','scramble','flagquiz','typing','mathblitz','hangman','colorrush','numberguess'];
+const KIDS_IDS     = ['snake','flappy','memory','whackmole','bubble','reaction','breakout','dodge'];
+const BRAIN_IDS    = ['minesweeper','g2048','simon','colorrush','numberguess','memory'];
+
+/* Turn a plays string like "2.1M" / "950K" into a sortable number. */
+function playsToNumber(plays = '') {
+  const n = parseFloat(plays);
+  if (Number.isNaN(n)) return 0;
+  if (/m/i.test(plays)) return n * 1_000_000;
+  if (/k/i.test(plays)) return n * 1_000;
+  return n;
+}
 
 /* ── Static reviews ─────────────────────────────────────────────────── */
 const REVIEWS = [
@@ -67,7 +79,7 @@ function Stars({ n }) {
   );
 }
 
-export default function HomePage({ db, allDb, search, category, setCategory, onPlay, setPage, favorites, onFav, recentPlayed, scores }) {
+export default function HomePage({ db, allDb, search, category, setCategory, onPlay, setPage, favorites, onFav, recentPlayed, scores, reviews }) {
   const [showAll, setShowAll] = useState(false);
 
   const visibleGames = showAll ? db : db.slice(0, INITIAL_SHOW);
@@ -77,6 +89,27 @@ export default function HomePage({ db, allDb, search, category, setCategory, onP
   const scrollRecent = dir => carouselRef.current?.scrollBy({ left: dir * 280, behavior: 'smooth' });
 
   const byIds = ids => ids.map(id => allDb.find(g => g.id === id)).filter(Boolean);
+
+  // Most-played games, highest first — user-skill games only (AI-opponent
+  // games are showcased in their own section further down).
+  const skillRanked = [...allDb]
+    .filter(g => !g.ai)
+    .sort((a, b) => playsToNumber(b.plays) - playsToNumber(a.plays));
+  const featuredGames = skillRanked.slice(0, 6); // big banner carousel
+  const popularGames  = skillRanked.slice(0, 8); // horizontal row below
+
+  // Games you play against the computer, grouped together.
+  const aiGames = allDb.filter(g => g.ai);
+
+  // Normalise Firebase reviews into the card shape; fall back to static ones.
+  const liveReviews = (reviews || []).map(r => ({
+    name:   r.userName,
+    avatar: r.userPhoto,
+    stars:  r.stars,
+    game:   r.gameTitle,
+    text:   r.text,
+  }));
+  const displayReviews = (liveReviews.length ? liveReviews : REVIEWS).slice(0, 5);
 
   return (
     <div>
@@ -153,6 +186,9 @@ export default function HomePage({ db, allDb, search, category, setCategory, onP
         </div>
       </section>
 
+      {/* ══ FEATURED POPULAR BANNERS ══════════════════════════════════ */}
+      <FeaturedBanner games={featuredGames} onPlay={onPlay} />
+
       {/* ══ RECENTLY PLAYED ═══════════════════════════════════════════ */}
       {recentPlayed.length > 0 && (
         <section style={{ padding:'32px 0 8px', maxWidth:1200, margin:'0 auto' }}>
@@ -177,6 +213,28 @@ export default function HomePage({ db, allDb, search, category, setCategory, onP
 
       <div className="section-divider" />
 
+      {/* ══ MOST POPULAR SECTION ══════════════════════════════════════ */}
+      <GameRow
+        title="Most Popular Games" emoji="🔥" gradient="linear-gradient(135deg,#EF4444,#F59E0B)"
+        games={popularGames}
+        onPlay={onPlay} favorites={favorites} onFav={onFav} scores={scores}
+        onMore={() => { setCategory('All'); setPage('games'); }}
+        moreLabel="All Games"
+      />
+
+      <div className="section-divider" />
+
+      {/* ══ LEARNING / EDUCATIONAL SECTION (featured) ════════════════ */}
+      <GameRow
+        title="Learn & Play" emoji="📚" gradient="linear-gradient(135deg,#10B981,#3B82F6)"
+        games={byIds(LEARNING_IDS)}
+        onPlay={onPlay} favorites={favorites} onFav={onFav} scores={scores}
+        onMore={() => { setCategory('Educational'); setPage('games'); }}
+        moreLabel="All Learning Games"
+      />
+
+      <div className="section-divider" />
+
       {/* ══ KIDS GAMES SECTION ════════════════════════════════════════ */}
       <GameRow
         title="Kids Games" emoji="🧒" gradient="linear-gradient(135deg,#F59E0B,#EF4444)"
@@ -188,25 +246,27 @@ export default function HomePage({ db, allDb, search, category, setCategory, onP
 
       <div className="section-divider" />
 
-      {/* ══ LEARNING / EDUCATIONAL SECTION ═══════════════════════════ */}
+      {/* ══ BRAIN & PUZZLE SECTION ════════════════════════════════════ */}
       <GameRow
-        title="Learning Games" emoji="📚" gradient="linear-gradient(135deg,#10B981,#3B82F6)"
-        games={byIds(LEARNING_IDS)}
+        title="Brain & Puzzle" emoji="🧩" gradient="linear-gradient(135deg,#7C3AED,#EC4899)"
+        games={byIds(BRAIN_IDS)}
         onPlay={onPlay} favorites={favorites} onFav={onFav} scores={scores}
-        onMore={() => { setCategory('Educational'); setPage('games'); }}
-        moreLabel="All Learning Games"
+        onMore={() => { setCategory('Puzzle'); setPage('games'); }}
+        moreLabel="All Puzzle Games"
       />
 
       <div className="section-divider" />
 
-      {/* ══ STRATEGY SECTION ══════════════════════════════════════════ */}
-      <GameRow
-        title="Strategy & Brain" emoji="🧠" gradient="linear-gradient(135deg,#7C3AED,#EC4899)"
-        games={byIds(STRATEGY_IDS)}
-        onPlay={onPlay} favorites={favorites} onFav={onFav} scores={scores}
-        onMore={() => { setCategory('Strategy'); setPage('games'); }}
-        moreLabel="All Strategy Games"
-      />
+      {/* ══ VS COMPUTER (AI OPPONENTS) SECTION ═══════════════════════ */}
+      {aiGames.length > 0 && (
+        <GameRow
+          title="Vs Computer" emoji="🤖" gradient="linear-gradient(135deg,#475569,#1E293B)"
+          games={aiGames}
+          onPlay={onPlay} favorites={favorites} onFav={onFav} scores={scores}
+          onMore={() => { setCategory('Strategy'); setPage('games'); }}
+          moreLabel="All Strategy Games"
+        />
+      )}
 
       <div className="section-divider" style={{ margin:'8px 24px 0' }} />
 
@@ -252,6 +312,9 @@ export default function HomePage({ db, allDb, search, category, setCategory, onP
                 🎮 More Games
                 <span style={{ background:'rgba(255,255,255,0.2)', borderRadius:8, padding:'2px 10px', fontSize:14 }}>+{db.length - INITIAL_SHOW}</span>
               </button>
+              <p style={{ fontFamily:"'Exo 2',sans-serif", color:'#475569', fontSize:12, marginTop:14 }}>
+                or <span onClick={() => setPage && setPage('games')} style={{ color:'#A78BFA', cursor:'pointer', textDecoration:'underline' }}>browse all games →</span>
+              </p>
             </div>
           ) : (
             <button onClick={() => { setShowAll(false); document.getElementById('games-section')?.scrollIntoView({ behavior:'smooth' }); }}
@@ -285,14 +348,16 @@ export default function HomePage({ db, allDb, search, category, setCategory, onP
           </div>
         </div>
 
-        {/* Reviews carousel */}
+        {/* Reviews carousel — latest from the community (max 5) */}
         <div className="reviews-track">
-          {REVIEWS.map((r, i) => (
+          {displayReviews.map((r, i) => (
             <div key={i} className="review-card">
               {/* Top row */}
               <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:14 }}>
-                <div style={{ width:44, height:44, borderRadius:'50%', background:'linear-gradient(135deg,rgba(124,58,237,0.3),rgba(236,72,153,0.3))', border:'2px solid rgba(124,58,237,0.4)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:22, flexShrink:0 }}>
-                  {r.avatar}
+                <div style={{ width:44, height:44, borderRadius:'50%', background:'linear-gradient(135deg,rgba(124,58,237,0.3),rgba(236,72,153,0.3))', border:'2px solid rgba(124,58,237,0.4)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:22, flexShrink:0, overflow:'hidden' }}>
+                  {r.avatar && /^https?:\/\//.test(r.avatar)
+                    ? <img src={r.avatar} alt="" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+                    : (r.avatar || '🎮')}
                 </div>
                 <div>
                   <div style={{ fontFamily:"'Exo 2',sans-serif", fontWeight:700, fontSize:14, color:'#E2E8F0' }}>{r.name}</div>
@@ -310,7 +375,7 @@ export default function HomePage({ db, allDb, search, category, setCategory, onP
 
         {/* Write a review CTA */}
         <div style={{ textAlign:'center', padding:'24px 24px 8px' }}>
-          <button onClick={() => alert("working")}
+          <button onClick={() => setPage && setPage('contact')}
             style={{ background:'transparent', border:'1px solid rgba(124,58,237,0.4)', borderRadius:12, padding:'11px 28px', color:'#A78BFA', fontFamily:"'Exo 2',sans-serif", fontWeight:700, fontSize:14, cursor:'pointer', transition:'all 0.2s' }}
             onMouseEnter={e => e.currentTarget.style.background='rgba(124,58,237,0.15)'}
             onMouseLeave={e => e.currentTarget.style.background='transparent'}

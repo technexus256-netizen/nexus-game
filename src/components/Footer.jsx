@@ -1,11 +1,11 @@
-import { useState } from 'react';
-
 const FOOTER_LINKS = {
   'Quick Links': [
     { label: '🏠 Home',        key: 'home'        },
     { label: '🎮 All Games',   key: 'games'       },
+    { label: '🎯 How to Play', key: 'how-to-play' },
+    { label: 'ℹ️ About',       key: 'about'       },
+    { label: '📰 News',        key: 'news'        },
     { label: '⭐ Favorites',   key: 'favorites'   },
-    { label: '🏆 Leaderboard', key: 'leaderboard' },
   ],
   'Game Categories': [
     { label: '🏎️ Racing',      key: 'games' },
@@ -35,13 +35,7 @@ const SOCIALS = [
 const GAMES_LIST = ['🐍 Neon Snake','⭕ Tic Tac Toe','🚀 Flappy Rocket','🃏 Memory Cards','🧱 Brick Breaker','☄️ Asteroid Dodge','⌨️ Word Blast','🏓 Cyber Pong','🛸 Space Shooter'];
 
 export default function Footer({ onNav }) {
-  const [email, setEmail]   = useState('');
-  const [subbed, setSubbed] = useState(false);
   const year = new Date().getFullYear();
-
-  const handleSub = () => {
-    if (email.includes('@')) { setSubbed(true); setEmail(''); }
-  };
 
   return (
     <footer style={{ background:'#020510', borderTop:'1px solid rgba(124,58,237,0.2)', marginTop:0 }}>
@@ -85,36 +79,6 @@ export default function Footer({ onNav }) {
         }
       `}</style>
 
-      {/* ── Top band: newsletter ─────────────────────── */}
-      <div style={{display:"none", background:'linear-gradient(135deg,rgba(124,58,237,0.15),rgba(236,72,153,0.1))', borderBottom:'1px solid rgba(124,58,237,0.15)', padding:'28px 24px' }}>
-        <div style={{ maxWidth:1280, margin:'0 auto', display:'flex', alignItems:'center', justifyContent:'space-between', gap:20, flexWrap:'wrap' }}>
-          <div>
-            <h3 style={{ fontFamily:"'Fredoka One',cursive", fontSize:'clamp(18px,3vw,24px)', color:'#fff', marginBottom:4 }}>
-              📬 Stay in the Game!
-            </h3>
-            <p style={{ fontFamily:"'Exo 2',sans-serif", fontSize:13, color:'#94A3B8' }}>
-              Get notified about new games, tournaments & updates.
-            </p>
-          </div>
-          {subbed ? (
-            <div style={{ fontFamily:"'Fredoka One',cursive", fontSize:18, color:'#43E97B', display:'flex', alignItems:'center', gap:8 }}>
-              ✅ You're subscribed!
-            </div>
-          ) : (
-            <div style={{ display:'flex', borderRadius:10, overflow:'hidden', border:'1px solid rgba(124,58,237,0.4)', maxWidth:380, width:'100%' }}>
-              <input
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                onKeyDown={e => e.key==='Enter' && handleSub()}
-                placeholder="your@email.com"
-                style={{ flex:1, background:'rgba(4,8,20,0.8)', border:'none', padding:'12px 16px', color:'#fff', fontSize:14, fontFamily:"'Exo 2',sans-serif", minWidth:0 }}
-              />
-              <button className="ft-sub-btn" onClick={handleSub}>Subscribe →</button>
-            </div>
-          )}
-        </div>
-      </div>
-
       {/* ── Main footer grid ────────────────────────── */}
       <div style={{ maxWidth:1280, margin:'0 auto', padding:'52px 24px 32px' }}>
         <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))', gap:'40px 32px' }}>
@@ -133,7 +97,7 @@ export default function Footer({ onNav }) {
             </div>
 
             <p style={{ fontFamily:"'Exo 2',sans-serif", fontSize:13, color:'#64748B', lineHeight:1.8, marginBottom:20 }}>
-              The ultimate kid-safe gaming platform with 9 real playable HTML5 games. No downloads, no installs — just play! 🚀
+              The ultimate kid-safe gaming platform with 28 real playable HTML5 games. No downloads, no installs — just play! 🚀
             </p>
 
             {/* Badges */}
@@ -146,7 +110,7 @@ export default function Footer({ onNav }) {
             </div>
 
             {/* Socials */}
-            <div style={{ display:'none', gap:8, flexWrap:'wrap' }}>
+            <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
               {SOCIALS.map(s => (
                 <div key={s.label} className="ft-social" title={s.label} style={{ color:s.color }}>
                   {s.icon}
@@ -171,7 +135,7 @@ export default function Footer({ onNav }) {
           <div>
             <div className="ft-col-title">Platform Stats</div>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:20 }}>
-              {[['25','Games'],['HTML5','Engine'],['Free','Forever'],['0','Downloads'],['25+','Categories'],['100%','Kid Safe']].map(([v,l]) => (
+              {[['28','Games'],['HTML5','Engine'],['Free','Forever'],['0','Downloads'],['8','Categories'],['100%','Kid Safe']].map(([v,l]) => (
                 <div key={l} style={{ background:'rgba(124,58,237,0.08)', border:'1px solid rgba(124,58,237,0.15)', borderRadius:10, padding:'10px 12px', textAlign:'center' }}>
                   <div style={{ fontFamily:"'Fredoka One',cursive", fontSize:18, background:'linear-gradient(135deg,#A78BFA,#EC4899)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>{v}</div>
                   <div style={{ fontFamily:"'Exo 2',sans-serif", fontSize:10, color:'#64748B', marginTop:2 }}>{l}</div>
@@ -192,7 +156,7 @@ export default function Footer({ onNav }) {
         </div>
 
         {/* ── Games tag cloud ──────────────────────── */}
-        <div style={{ marginTop:40, paddingTop:28, borderTop:'1px solid rgba(124,58,237,0.12)', display: "none" }}>
+        <div style={{ marginTop:40, paddingTop:28, borderTop:'1px solid rgba(124,58,237,0.12)' }}>
           <div style={{ fontFamily:"'Exo 2',sans-serif", fontSize:12, color:'#374151', marginBottom:12, fontWeight:700, letterSpacing:1, textTransform:'uppercase' }}>
             Playable Games on Platform
           </div>
@@ -206,11 +170,11 @@ export default function Footer({ onNav }) {
         </div>
 
         {/* ── Bottom bar ───────────────────────────── */}
-        <div style={{ marginTop:28, paddingTop:20, borderTop:'1px solid rgba(255,255,255,0.05)', display:'flex', justifyContent:'center', alignItems:'center', flexWrap:'wrap', gap:12 }}>
+        <div style={{ marginTop:28, paddingTop:20, borderTop:'1px solid rgba(255,255,255,0.05)', display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:12 }}>
           <p style={{ fontFamily:"'Exo 2',sans-serif", fontSize:12, color:'#374151' }}>
             © {year} Nexus Play. Made with ❤️ for gamers everywhere. All rights reserved.
           </p>
-          <div style={{ display:'none', gap:16 }}>
+          <div style={{ display:'flex', gap:16 }}>
             {['Privacy','Terms','Cookies','Sitemap'].map(t => (
               <span key={t} style={{ fontFamily:"'Exo 2',sans-serif", fontSize:11, color:'#374151', cursor:'pointer', transition:'color 0.2s' }}
                 onMouseEnter={e => e.target.style.color='#A78BFA'}

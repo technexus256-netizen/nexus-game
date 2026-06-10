@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { loginWithGoogle } from '../firebase';
 
-export default function GoogleLoginModal({ open, onClose, onLogin }) {
+export default function GoogleLoginModal({ open, onClose, onLogin, gameTitle }) {
   const [loading, setLoading] = useState(false);
   const [error,   setError]   = useState('');
 
@@ -99,7 +99,9 @@ export default function GoogleLoginModal({ open, onClose, onLogin }) {
             fontFamily:"'Exo 2',sans-serif", fontSize:14, color:'#94A3B8',
             marginBottom:28, lineHeight:1.6,
           }}>
-            Save your scores, track favorites, and compete on the leaderboard.
+            {gameTitle
+              ? `Sign in to play ${gameTitle} — and save your scores, favorites, and reviews.`
+              : 'Save your scores, track favorites, and compete on the leaderboard.'}
           </p>
 
           {/* Google Button */}

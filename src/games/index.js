@@ -24,6 +24,9 @@ import SpeedClickGame        from './SpeedClickGame';
 import MinesweeperGame       from './MinesweeperGame';
 import NumberGuessGame       from './NumberGuessGame';
 import CardWarGame           from './CardWarGame';
+import WordScrambleGame      from './WordScrambleGame';
+import FlagQuizGame          from './FlagQuizGame';
+import BrainQuizGame         from './BrainQuizGame';
 
 export const GAME_COMPONENTS = {
   snake:       SnakeGame,
@@ -51,4 +54,7 @@ export const GAME_COMPONENTS = {
   minesweeper: MinesweeperGame,
   numberguess: NumberGuessGame,
   cardwar:     CardWarGame,
+  scramble:    WordScrambleGame,
+  flagquiz:    FlagQuizGame,
+  brainquiz:   BrainQuizGame,
 };

@@ -21,6 +21,7 @@ export const GAMES_DB = [
     plays: '1.8M',
     desc: 'Play Tic Tac Toe against a smart AI opponent. Get 3 in a row to win!',
     controls: 'Mouse Click',
+    ai: true,
   },
   {
     id: 'flappy',
@@ -109,6 +110,7 @@ export const GAMES_DB = [
     plays: '5.1M',
     desc: 'Classic chess with full piece movement, check & checkmate detection. 2-player on the same screen!',
     controls: 'Mouse Click',
+    ai: true,
   },
   // ── 15 New Games ─────────────────────────────────────────────────────
   {
@@ -121,6 +123,7 @@ export const GAMES_DB = [
     plays: '3.2M',
     desc: 'The classic hand game against an AI opponent. Choose rock, paper, or scissors and outsmart the computer!',
     controls: 'Mouse Click',
+    ai: true,
   },
   {
     id: 'reaction',
@@ -187,6 +190,7 @@ export const GAMES_DB = [
     plays: '2.9M',
     desc: 'Drop discs into the grid and connect four in a row before the AI does — horizontally, vertically, or diagonally!',
     controls: 'Mouse Click',
+    ai: true,
   },
   {
     id: 'blackjack',
@@ -198,6 +202,7 @@ export const GAMES_DB = [
     plays: '4.6M',
     desc: 'Hit or stand — get as close to 21 as possible without busting! Classic casino blackjack vs the dealer.',
     controls: 'Mouse Click',
+    ai: true,
   },
   {
     id: 'g2048',
@@ -276,6 +281,40 @@ export const GAMES_DB = [
     desc: 'Classic card war! Each round the higher card wins both cards. Win all 52 cards to conquer the deck!',
     controls: 'Mouse Click',
   },
+  // ── New Educational Games ────────────────────────────────────────────
+  {
+    id: 'scramble',
+    title: 'Word Scramble',
+    category: 'Educational',
+    emoji: '🔡',
+    color: '#22d3ee',
+    rating: 4.8,
+    plays: '2.6M',
+    desc: 'Unscramble the jumbled letters to reveal the hidden word! A fun vocabulary and spelling workout with helpful hints.',
+    controls: 'Keyboard',
+  },
+  {
+    id: 'flagquiz',
+    title: 'Flag Quiz',
+    category: 'Educational',
+    emoji: '🌍',
+    color: '#34d399',
+    rating: 4.7,
+    plays: '2.3M',
+    desc: 'Test your geography! Look at the flag and pick the right country. Learn the flags of the world while you play.',
+    controls: 'Mouse Click',
+  },
+  {
+    id: 'brainquiz',
+    title: 'Brain Quiz',
+    category: 'Educational',
+    emoji: '🧠',
+    color: '#818cf8',
+    rating: 4.9,
+    plays: '3.1M',
+    desc: 'A rapid-fire general-knowledge quiz across science, geography, maths and more. Answer fast for a speed bonus!',
+    controls: 'Mouse Click',
+  },
 ];
 
 export const CATEGORIES = ['All', 'Arcade', 'Puzzle', 'Action', 'Strategy', 'Sports', 'Educational', 'Card'];
@@ -306,6 +345,9 @@ export const HOW_TO_PLAY = {
   minesweeper: 'Left-click to reveal a cell. Right-click to flag a mine. Use the numbers to deduce where mines are hidden. Clear the board to win!',
   numberguess: 'Type a number from 1 to 100 and press Guess. Follow the Hot / Cold hints to zero in on the secret number!',
   cardwar:     'Click Flip Cards each round. The higher card wins both cards. Win all 52 cards to conquer the deck! Equal cards trigger WAR!',
+  scramble:    'Read the jumbled letters and type the correct word, then press Enter or Check. Stuck? Use a Hint for half points, or Skip to a new word. Solve as many as you can in 60 seconds!',
+  flagquiz:    'A flag appears — click the country it belongs to from the four options. Answer 3 in a row to earn double points. Race the 40-second clock!',
+  brainquiz:   'Read each question and click the answer you think is correct. You have 12 seconds per question — the faster you answer, the bigger your speed bonus. 8 questions per round!',
 };
 
 export const getSimilarGames = (game, limit = 3) =>
