@@ -24,13 +24,7 @@ const FOOTER_LINKS = {
   ],
 };
 
-const SOCIALS = [
-  { icon: '𝕏',  label: 'Twitter',  color: '#1DA1F2' },
-  { icon: 'f',  label: 'Facebook', color: '#1877F2' },
-  { icon: '▶',  label: 'YouTube',  color: '#FF0000' },
-  { icon: '📸', label: 'Instagram',color: '#E1306C' },
-  { icon: '💬', label: 'Discord',  color: '#5865F2' },
-];
+
 
 const GAMES_LIST = ['🐍 Neon Snake','⭕ Tic Tac Toe','🚀 Flappy Rocket','🃏 Memory Cards','🧱 Brick Breaker','☄️ Asteroid Dodge','⌨️ Word Blast','🏓 Cyber Pong','🛸 Space Shooter'];
 
@@ -109,14 +103,7 @@ export default function Footer({ onNav }) {
               ))}
             </div>
 
-            {/* Socials */}
-            <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
-              {SOCIALS.map(s => (
-                <div key={s.label} className="ft-social" title={s.label} style={{ color:s.color }}>
-                  {s.icon}
-                </div>
-              ))}
-            </div>
+
           </div>
 
           {/* Link columns */}
@@ -155,19 +142,7 @@ export default function Footer({ onNav }) {
           </div>
         </div>
 
-        {/* ── Games tag cloud ──────────────────────── */}
-        <div style={{ marginTop:40, paddingTop:28, borderTop:'1px solid rgba(124,58,237,0.12)' }}>
-          <div style={{ fontFamily:"'Exo 2',sans-serif", fontSize:12, color:'#374151', marginBottom:12, fontWeight:700, letterSpacing:1, textTransform:'uppercase' }}>
-            Playable Games on Platform
-          </div>
-          <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
-            {GAMES_LIST.map(g => (
-              <span key={g} className="ft-game-tag" onClick={() => onNav('games')} style={{ background:'rgba(124,58,237,0.1)', border:'1px solid rgba(124,58,237,0.2)', borderRadius:8, padding:'5px 10px', fontFamily:"'Exo 2',sans-serif", fontSize:12, color:'#94A3B8', cursor:'pointer', transition:'all 0.2s', whiteSpace:'nowrap' }}>
-                {g}
-              </span>
-            ))}
-          </div>
-        </div>
+ 
 
         {/* ── Bottom bar ───────────────────────────── */}
         <div style={{ marginTop:28, paddingTop:20, borderTop:'1px solid rgba(255,255,255,0.05)', display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:12 }}>

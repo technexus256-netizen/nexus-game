@@ -148,6 +148,18 @@ export default function PlayPage({ game: g, GameComp, onBack, onScore, similar, 
 
   return (
     <div style={{ maxWidth:1100, margin:'0 auto', padding:'24px 20px 60px' }}>
+      <style>{`
+        .pp-grid { display:grid; grid-template-columns:1fr minmax(0,360px); gap:24px; align-items:start; }
+        /* Stack the game and sidebar once there isn't room for two columns */
+        @media (max-width:860px){
+          .pp-grid { grid-template-columns:1fr; }
+        }
+        @media (max-width:560px){
+          .pp-canvas { padding:12px !important; min-height:340px !important; }
+          .pp-gamehead { padding:12px 14px !important; }
+          .pp-pad { padding:16px !important; }
+        }
+      `}</style>
 
       {/* Breadcrumb */}
       <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:20, fontFamily:"'Exo 2',sans-serif", fontSize:13, color:'#64748B' }}>
@@ -157,14 +169,14 @@ export default function PlayPage({ game: g, GameComp, onBack, onScore, similar, 
       </div>
 
       {/* Two-column layout */}
-      <div style={{ display:'grid', gridTemplateColumns:'1fr minmax(0,360px)', gap:24, alignItems:'start' }}>
+      <div className="pp-grid">
 
         {/* ── Left: game canvas ─────────────────── */}
         <div>
           <div ref={fsRef} style={{ background:'rgba(10,5,32,0.95)', border:`1px solid ${g.color}40`, borderRadius:24, overflow:'hidden', boxShadow:`0 0 60px ${g.color}20` }}>
 
             {/* Game header bar */}
-            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'14px 20px', background:`linear-gradient(90deg,${g.color}20,transparent)`, borderBottom:`1px solid ${g.color}25` }}>
+            <div className="pp-gamehead" style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:10, flexWrap:'wrap', padding:'14px 20px', background:`linear-gradient(90deg,${g.color}20,transparent)`, borderBottom:`1px solid ${g.color}25` }}>
               <div style={{ display:'flex', alignItems:'center', gap:10 }}>
                 <span style={{ fontSize:28 }}>{g.emoji}</span>
                 <div>
@@ -188,13 +200,13 @@ export default function PlayPage({ game: g, GameComp, onBack, onScore, similar, 
             </div>
 
             {/* Canvas area */}
-            <div style={{ padding:20, display:'flex', justifyContent:'center', background:'#040814', minHeight:420 }}>
+            <div className="pp-canvas" style={{ padding:20, display:'flex', justifyContent:'center', alignItems:'center', background:'#040814', minHeight:420, overflowX:'auto' }}>
               {GameComp && <GameComp onScore={handleScore} />}
             </div>
           </div>
 
           {/* About panel */}
-          <div style={{ marginTop:16, background:'rgba(15,12,41,0.7)', border:'1px solid rgba(124,58,237,0.15)', borderRadius:16, padding:20 }}>
+          <div className="pp-pad" style={{ marginTop:16, background:'rgba(15,12,41,0.7)', border:'1px solid rgba(124,58,237,0.15)', borderRadius:16, padding:20 }}>
             <h3 style={{ fontFamily:"'Fredoka One',cursive", fontSize:16, color:'#A78BFA', marginBottom:8 }}>About this Game</h3>
             <p style={{ fontFamily:"'Exo 2',sans-serif", fontSize:14, color:'#94A3B8', lineHeight:1.7 }}>{g.desc}</p>
             <div style={{ display:'flex', gap:20, marginTop:14, flexWrap:'wrap' }}>
@@ -215,7 +227,7 @@ export default function PlayPage({ game: g, GameComp, onBack, onScore, similar, 
         <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
 
           {/* How to play */}
-          <div style={{ background:'rgba(15,12,41,0.8)', border:`1px solid ${g.color}30`, borderRadius:20, padding:20 }}>
+          <div className="pp-pad" style={{ background:'rgba(15,12,41,0.8)', border:`1px solid ${g.color}30`, borderRadius:20, padding:20 }}>
             <h3 style={{ fontFamily:"'Fredoka One',cursive", fontSize:16, color:g.color, marginBottom:12 }}>🎯 How to Play</h3>
             <p style={{ fontFamily:"'Exo 2',sans-serif", fontSize:13, color:'#94A3B8', lineHeight:1.8 }}>
               {HOW_TO_PLAY[g.id]}
