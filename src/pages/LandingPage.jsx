@@ -69,6 +69,25 @@ export default function LandingPage({ allDb = [], onPlay, setPage }) {
         .lp-tile:hover { transform:translateY(-6px) scale(1.03); }
         .lp-marquee-track { display:flex; gap:14px; width:max-content; animation:lp-marquee 26s linear infinite; }
         .lp-marquee-wrap:hover .lp-marquee-track { animation-play-state:paused; }
+        .lp-cta-group { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+
+        /* ── Tablet & small laptop ── */
+        @media (max-width:640px){
+          .lp-cta  { padding:16px 30px; font-size:18px; }
+          .lp-cta2 { padding:16px 26px; font-size:16px; }
+        }
+        /* ── Phone ── */
+        @media (max-width:460px){
+          .lp-cta-group { flex-direction:column; align-items:stretch; gap:12px; width:100%; max-width:340px; margin-left:auto; margin-right:auto; }
+          .lp-cta-group .lp-cta, .lp-cta-group .lp-cta2 { width:100%; padding:15px 18px; font-size:16px; }
+          .lp-tile { width:132px; padding:16px 10px; }
+          .lp-feature { padding:24px 20px; }
+        }
+        /* Respect users who prefer no motion */
+        @media (prefers-reduced-motion:reduce){
+          .lp-cta { animation:none; }
+          .lp-marquee-track { animation:none; }
+        }
       `}</style>
 
       {/* ══ HERO (advertisement) ══════════════════════════════════════ */}
@@ -108,7 +127,7 @@ export default function LandingPage({ allDb = [], onPlay, setPage }) {
             word puzzles to arcade classics. No installs, no ads in games, just pure fun.
           </p>
 
-          <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <div className="lp-cta-group">
             <button className="lp-cta" onClick={goPlay}>▶ Play Free Now</button>
             <button className="lp-cta2" onClick={browse}>Browse All Games</button>
           </div>
@@ -213,7 +232,7 @@ export default function LandingPage({ allDb = [], onPlay, setPage }) {
           <p style={{ fontSize: 'clamp(14px,2vw,17px)', color: '#CBD5E1', margin: '0 auto 32px', maxWidth: 520 }}>
             Join thousands of players enjoying {total} games right now. No account needed to start — just press play.
           </p>
-          <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <div className="lp-cta-group">
             <button className="lp-cta" onClick={goPlay}>▶ Start Playing Free</button>
             <button className="lp-cta2" onClick={browse}>See the Games</button>
           </div>

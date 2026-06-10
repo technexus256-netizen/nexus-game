@@ -3,7 +3,8 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 /* ─── URL routing ─────────────────────────────────────────────────────────
    Each page has a real path so the browser address bar reflects the current
    page and back/forward work. "landing" (the Discover advert) lives at
-   /discover and is only reachable by URL or on a visitor's first visit.
+   /discover and is a marketing-only page reachable solely by visiting that
+   route directly — it is never auto-shown to visitors landing on "/".
    ────────────────────────────────────────────────────────────────────────── */
 const PATH_TO_PAGE = {
   '/':             'home',
@@ -24,8 +25,6 @@ const PAGE_TO_PATH = Object.fromEntries(
   Object.entries(PATH_TO_PAGE).map(([path, page]) => [page, path])
 );
 
-const VISIT_KEY = 'nexus_visited';
-
 const cleanPath = () => {
   const p = window.location.pathname.replace(/\/+$/, '');
   return p === '' ? '/' : p;
@@ -33,18 +32,10 @@ const cleanPath = () => {
 
 const pageFromUrl = () => PATH_TO_PAGE[cleanPath()] || 'home';
 
-const hasVisited = () => {
-  try { return localStorage.getItem(VISIT_KEY) === '1'; } catch { return false; }
-};
-const markVisited = () => {
-  try { localStorage.setItem(VISIT_KEY, '1'); } catch { /* ignore */ }
-};
-
-/* Decide the very first page: a brand-new visitor landing on "/" is sent to
-   the Discover advert; everyone else gets whatever the URL points to. */
+/* Decide the very first page straight from the URL. The Discover advert is a
+   marketing page reachable only at /discover — never auto-shown on "/". */
 function initialPage() {
   const fromUrl = pageFromUrl();
-  if (cleanPath() === '/' && !hasVisited()) return 'landing';
   // A direct refresh on /play can't restore the game — fall back to games.
   if (fromUrl === 'play') return 'games';
   return fromUrl;
@@ -63,14 +54,10 @@ export function useGameState() {
 
   // Keep the URL in sync with the initial page, and listen for back/forward.
   useEffect(() => {
-    // If a first-time visitor was redirected to the advert, reflect it in the URL.
-    if (page === 'landing' && cleanPath() === '/') {
-      window.history.replaceState({ page: 'landing' }, '', '/discover');
-    } else if (PATH_TO_PAGE[cleanPath()] !== page && PAGE_TO_PATH[page]) {
+    if (PATH_TO_PAGE[cleanPath()] !== page && PAGE_TO_PATH[page]) {
       // e.g. an initial /play refresh that we redirected to games
       window.history.replaceState({ page }, '', PAGE_TO_PATH[page]);
     }
-    markVisited();
 
     const onPop = () => {
       const next = pageFromUrl();
