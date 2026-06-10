@@ -2,15 +2,19 @@ import { useState, useEffect }       from 'react';
 import { GAMES_DB, getSimilarGames } from './data/gamesData';
 import { useGameState }              from './hooks/useGameState';
 import { GAME_COMPONENTS }           from './games/index';
+import { watchAuth, logout, getRecentReviews } from './firebase';
 
 import Navbar           from './components/Navbar';
 import Footer           from './components/Footer';
 import GoogleLoginModal from './components/GoogleLoginModal';
 
 import HomePage         from './pages/HomePage';
+import LandingPage      from './pages/LandingPage';
+import AboutPage        from './pages/AboutPage';
+import HowToPlayPage    from './pages/HowToPlayPage';
+import NewsPage         from './pages/NewsPage';
 import GamesPage        from './pages/GamesPage';
 import FavoritesPage    from './pages/FavoritesPage';
-import LeaderboardPage  from './pages/LeaderboardPage';
 import PlayPage         from './pages/PlayPage';
 import ContactPage      from './pages/ContactPage';
 import PrivacyPage      from './pages/PrivacyPage';
@@ -19,8 +23,10 @@ import ParentGuidePage  from './pages/ParentGuidePage';
 import ReportBugPage    from './pages/ReportBugPage';
 
 export default function App() {
-  const [loginOpen, setLoginOpen] = useState(false);
-  const [user,      setUser]      = useState(null);
+  const [loginOpen,   setLoginOpen]   = useState(false);
+  const [user,        setUser]        = useState(null);
+  const [pendingGame, setPendingGame] = useState(null);
+  const [homeReviews, setHomeReviews] = useState([]);
 
   const {
     page, setPage,
@@ -36,8 +42,40 @@ export default function App() {
     updateScore,
   } = useGameState();
 
+  // Restore the signed-in user across reloads.
+  useEffect(() => watchAuth(setUser), []);
+
+  // Load the latest reviews for the home page.
+  const loadHomeReviews = () =>
+    getRecentReviews(5).then(setHomeReviews).catch(() => setHomeReviews([]));
+  useEffect(() => { loadHomeReviews(); }, []);
+
   // Scroll to top on every page change
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, [page]);
+
+  // Require sign-in before playing. Remember the game so we can open it
+  // automatically once the user finishes logging in.
+  const handlePlay = (game) => {
+    if (!user) {
+      setPendingGame(game);
+      setLoginOpen(true);
+      return;
+    }
+    openGame(game);
+  };
+
+  const handleLogin = (u) => {
+    setUser(u);
+    if (pendingGame) {
+      openGame(pendingGame);
+      setPendingGame(null);
+    }
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    setUser(null);
+  };
 
   const filtered = GAMES_DB.filter(g => {
     const matchSearch   = g.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -56,15 +94,18 @@ export default function App() {
         search={search}
         setSearch={setSearch}
         user={user}
+        games={GAMES_DB}
+        onPlay={handlePlay}
         onLoginOpen={() => setLoginOpen(true)}
-        onLogout={() => setUser(null)}
+        onLogout={handleLogout}
       />
 
       {/* ── Google Login Modal ── */}
       <GoogleLoginModal
         open={loginOpen}
-        onClose={() => setLoginOpen(false)}
-        onLogin={setUser}
+        gameTitle={pendingGame?.title}
+        onClose={() => { setLoginOpen(false); setPendingGame(null); }}
+        onLogin={handleLogin}
       />
 
       {/* ── Page Router ── */}
@@ -77,13 +118,34 @@ export default function App() {
             search={search}
             category={category}
             setCategory={setCategory}
-            onPlay={openGame}
+            onPlay={handlePlay}
             setPage={setPage}
             favorites={favorites}
             onFav={toggleFavorite}
             recentPlayed={recentPlayed}
             scores={scores}
+            reviews={homeReviews}
           />
+        )}
+
+        {page === 'landing' && (
+          <LandingPage
+            allDb={GAMES_DB}
+            onPlay={handlePlay}
+            setPage={setPage}
+          />
+        )}
+
+        {page === 'about' && (
+          <AboutPage allDb={GAMES_DB} onPlay={handlePlay} setPage={setPage} />
+        )}
+
+        {page === 'how-to-play' && (
+          <HowToPlayPage allDb={GAMES_DB} onPlay={handlePlay} setPage={setPage} />
+        )}
+
+        {page === 'news' && (
+          <NewsPage allDb={GAMES_DB} onPlay={handlePlay} setPage={setPage} />
         )}
 
         {page === 'games' && (
@@ -93,7 +155,7 @@ export default function App() {
             setCategory={setCategory}
             search={search}
             setSearch={setSearch}
-            onPlay={openGame}
+            onPlay={handlePlay}
             favorites={favorites}
             onFav={toggleFavorite}
             scores={scores}
@@ -103,14 +165,10 @@ export default function App() {
         {page === 'favorites' && (
           <FavoritesPage
             db={GAMES_DB.filter(g => favorites.includes(g.id))}
-            onPlay={openGame}
+            onPlay={handlePlay}
             onFav={toggleFavorite}
             favorites={favorites}
           />
-        )}
-
-        {page === 'leaderboard' && (
-          <LeaderboardPage scores={scores} />
         )}
 
         {page === 'play' && activeGame && (
@@ -126,6 +184,8 @@ export default function App() {
             favorites={favorites}
             onFav={toggleFavorite}
             bestScore={scores[activeGame.id] || 0}
+            user={user}
+            onReviewAdded={loadHomeReviews}
           />
         )}
 

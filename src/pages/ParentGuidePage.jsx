@@ -130,7 +130,7 @@ export default function ParentGuidePage() {
         <div style={{ fontSize:36, marginBottom:12 }}>📬</div>
         <div style={{ fontFamily:"'Fredoka One',cursive", fontSize:22, color:'#fff', marginBottom:8 }}>Have more questions?</div>
         <p style={{ fontFamily:"'Exo 2',sans-serif", fontSize:14, color:'#94A3B8', marginBottom:0 }}>
-          Email us at <span style={{ color:'#A78BFA', fontWeight:700 }}>technexus256@gmail.com</span> — a real human will respond within 24 hours.
+          Email us at <span style={{ color:'#A78BFA', fontWeight:700 }}>parents@nexusplay.com</span> — a real human will respond within 24 hours.
         </p>
       </div>
     </div>

@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
-import logo from '../assest/img/logo-gamin.png'
+import SearchModal from './SearchModal';
 
 const NAV_LINKS = [
-  { icon: '🏠', label: 'Home',        key: 'home'        },
-  { icon: '🎮', label: 'Games',       key: 'games'       },
-  { icon: '⭐', label: 'Favorites',   key: 'favorites'   },
-  { icon: '🏆', label: 'Leaderboard', key: 'leaderboard' },
+  { icon: '🏠', label: 'Home',      key: 'home'      },
+  { icon: '🎮', label: 'Games',     key: 'games'     },
+  { icon: '⭐', label: 'Favorites', key: 'favorites' },
 ];
 
-export default function Navbar({ page, setPage, search, setSearch, user, onLoginOpen, onLogout }) {
+export default function Navbar({ page, setPage, search, setSearch, user, games = [], onPlay, onLoginOpen, onLogout }) {
   const [scrolled,    setScrolled]    = useState(false);
   const [menuOpen,    setMenuOpen]    = useState(false);
   const [searchOpen,  setSearchOpen]  = useState(false);
@@ -19,7 +18,7 @@ export default function Navbar({ page, setPage, search, setSearch, user, onLogin
     const onResize = () => {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
-      if (!mobile) { setMenuOpen(false); setSearchOpen(false); }
+      if (!mobile) setMenuOpen(false);
     };
     window.addEventListener('scroll', onScroll);
     window.addEventListener('resize', onResize);
@@ -38,6 +37,13 @@ export default function Navbar({ page, setPage, search, setSearch, user, onLogin
 
   return (
     <>
+      <SearchModal
+        open={searchOpen}
+        onClose={() => setSearchOpen(false)}
+        games={games}
+        onPlay={onPlay}
+      />
+
       <style>{`
         @keyframes slideDown {
           from { opacity:0; transform:translateY(-12px); }
@@ -86,7 +92,6 @@ export default function Navbar({ page, setPage, search, setSearch, user, onLogin
             style={{ display:'flex', alignItems:'center', gap:9, cursor:'pointer', flexShrink:0, marginRight:8 }}
           >
             <span style={{ fontSize:28 }} className="float-anim">🎮</span>
-            {/* <img src={logo} alt="logo" style={{width: "80px"}} /> */}
             <div>
               <div
                 className="neon-text"
@@ -121,22 +126,21 @@ export default function Navbar({ page, setPage, search, setSearch, user, onLogin
           {/* Spacer on mobile */}
           {isMobile && <div style={{ flex:1 }} />}
 
-          {/* Desktop search box */}
+          {/* Desktop search trigger (opens modal) */}
           {!isMobile && (
-            <div style={{ position:'relative', width:240 }}>
-              <span style={{ position:'absolute', left:11, top:'50%', transform:'translateY(-50%)', fontSize:14, color:'#64748B', pointerEvents:'none' }}>🔍</span>
-              <input
-                value={search}
-                onChange={e => { setSearch(e.target.value); setPage('home'); }}
-                placeholder="Search games…"
-                style={{
-                  width:'100%', background:'rgba(15,12,41,0.85)',
-                  border:'1px solid rgba(124,58,237,0.3)', borderRadius:10,
-                  padding:'9px 12px 9px 34px', color:'#fff', fontSize:13,
-                  fontFamily:"'Exo 2',sans-serif",
-                }}
-              />
-            </div>
+            <button
+              onClick={() => setSearchOpen(true)}
+              style={{
+                display:'flex', alignItems:'center', gap:8, width:240,
+                background:'rgba(15,12,41,0.85)', border:'1px solid rgba(124,58,237,0.3)',
+                borderRadius:10, padding:'9px 12px', color:'#64748B',
+                fontSize:13, fontFamily:"'Exo 2',sans-serif", cursor:'pointer',
+                textAlign:'left',
+              }}
+            >
+              <span style={{ fontSize:14 }}>🔍</span>
+              <span style={{ flex:1 }}>Search games…</span>
+            </button>
           )}
 
           {/* Play free button (desktop) */}
@@ -186,7 +190,7 @@ export default function Navbar({ page, setPage, search, setSearch, user, onLogin
           {/* Mobile: search icon */}
           {isMobile && (
             <button
-              onClick={() => setSearchOpen(o => !o)}
+              onClick={() => setSearchOpen(true)}
               style={{ background:'rgba(124,58,237,0.15)', border:'1px solid rgba(124,58,237,0.3)', borderRadius:9, width:38, height:38, cursor:'pointer', fontSize:16, color:'#A78BFA', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}
             >
               🔍
@@ -206,27 +210,6 @@ export default function Navbar({ page, setPage, search, setSearch, user, onLogin
             </button>
           )}
         </div>
-
-        {/* ── Mobile search bar ────────────────────── */}
-        {isMobile && searchOpen && (
-          <div style={{ padding:'0 16px 14px', animation:'slideDown 0.25s ease' }}>
-            <div style={{ position:'relative' }}>
-              <span style={{ position:'absolute', left:11, top:'50%', transform:'translateY(-50%)', fontSize:14, color:'#64748B' }}>🔍</span>
-              <input
-                autoFocus
-                value={search}
-                onChange={e => { setSearch(e.target.value); setPage('home'); }}
-                placeholder="Search games…"
-                style={{
-                  width:'100%', background:'rgba(15,12,41,0.9)',
-                  border:'1px solid rgba(124,58,237,0.4)', borderRadius:10,
-                  padding:'11px 12px 11px 34px', color:'#fff', fontSize:14,
-                  fontFamily:"'Exo 2',sans-serif",
-                }}
-              />
-            </div>
-          </div>
-        )}
 
         {/* ── Mobile dropdown menu ─────────────────── */}
         {isMobile && menuOpen && (
@@ -289,7 +272,7 @@ export default function Navbar({ page, setPage, search, setSearch, user, onLogin
 
             {/* Stats strip */}
             <div style={{ display:'flex', justifyContent:'space-around', marginTop:14, padding:'12px 0', background:'rgba(124,58,237,0.08)', borderRadius:12 }}>
-              {[['9','Games'],['Free','Forever'],['No','Download']].map(([v,l]) => (
+              {[['28','Games'],['Free','Forever'],['No','Download']].map(([v,l]) => (
                 <div key={l} style={{ textAlign:'center' }}>
                   <div style={{ fontFamily:"'Fredoka One',cursive", fontSize:16, background:'linear-gradient(135deg,#A78BFA,#EC4899)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>{v}</div>
                   <div style={{ fontFamily:"'Exo 2',sans-serif", fontSize:10, color:'#64748B', marginTop:2 }}>{l}</div>
