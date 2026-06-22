@@ -27,6 +27,7 @@ import CardWarGame           from './CardWarGame';
 import WordScrambleGame      from './WordScrambleGame';
 import FlagQuizGame          from './FlagQuizGame';
 import BrainQuizGame         from './BrainQuizGame';
+import ArrowPuzzleGame       from './ArrowPuzzleGame';
 
 export const GAME_COMPONENTS = {
   snake:       SnakeGame,
@@ -57,4 +58,5 @@ export const GAME_COMPONENTS = {
   scramble:    WordScrambleGame,
   flagquiz:    FlagQuizGame,
   brainquiz:   BrainQuizGame,
+  arrowpuzzle: ArrowPuzzleGame,
 };

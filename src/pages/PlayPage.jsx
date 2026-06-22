@@ -146,10 +146,14 @@ export default function PlayPage({ game: g, GameComp, onBack, onScore, similar, 
     return () => document.removeEventListener('fullscreenchange', h);
   }, [setFullscreen]);
 
+  const fullPage = !!g.fullPage;
+
   return (
-    <div style={{ maxWidth:1100, margin:'0 auto', padding:'24px 20px 60px' }}>
+    <div style={{ maxWidth: fullPage ? 1600 : 1100, margin:'0 auto', padding:'24px 20px 60px' }}>
       <style>{`
         .pp-grid { display:grid; grid-template-columns:1fr minmax(0,360px); gap:24px; align-items:start; }
+        /* Full-page games (large boards) use the whole width, sidebar drops below */
+        .pp-grid.pp-full { grid-template-columns:1fr; }
         /* Stack the game and sidebar once there isn't room for two columns */
         @media (max-width:860px){
           .pp-grid { grid-template-columns:1fr; }
@@ -168,8 +172,8 @@ export default function PlayPage({ game: g, GameComp, onBack, onScore, similar, 
         <span style={{ color:'#fff' }}>{g.title}</span>
       </div>
 
-      {/* Two-column layout */}
-      <div className="pp-grid">
+      {/* Two-column layout (single, full-width column for full-page games) */}
+      <div className={`pp-grid${fullPage ? ' pp-full' : ''}`}>
 
         {/* ── Left: game canvas ─────────────────── */}
         <div>

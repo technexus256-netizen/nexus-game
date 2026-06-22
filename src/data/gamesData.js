@@ -315,6 +315,18 @@ export const GAMES_DB = [
     desc: 'A rapid-fire general-knowledge quiz across science, geography, maths and more. Answer fast for a speed bonus!',
     controls: 'Mouse Click',
   },
+  {
+    id: 'arrowpuzzle',
+    title: 'Arrow Puzzle',
+    category: 'Puzzle',
+    emoji: '➡️',
+    color: '#0EA5E9',
+    rating: 4.9,
+    plays: '5.7M',
+    desc: 'Tap an arrow to fire it off the board — but only if its path to the edge is clear! Plan your order and clear every arrow on a big grid. Choose Normal (12×12), Medium (15×15), Hard (18×18) or Very Hard (20×20).',
+    controls: 'Tap / Click',
+    fullPage: true,
+  },
 ];
 
 export const CATEGORIES = ['All', 'Arcade', 'Puzzle', 'Action', 'Strategy', 'Sports', 'Educational', 'Card'];
@@ -348,6 +360,7 @@ export const HOW_TO_PLAY = {
   scramble:    'Read the jumbled letters and type the correct word, then press Enter or Check. Stuck? Use a Hint for half points, or Skip to a new word. Solve as many as you can in 60 seconds!',
   flagquiz:    'A flag appears — click the country it belongs to from the four options. Answer 3 in a row to earn double points. Race the 40-second clock!',
   brainquiz:   'Read each question and click the answer you think is correct. You have 12 seconds per question — the faster you answer, the bigger your speed bonus. 8 questions per round!',
+  arrowpuzzle: 'Tap any arrow to fire it in the direction it points. It flies off the board only if every cell between it and the edge is empty — blocked arrows just buzz. Clear the whole board to win! Pick Normal (12×12), Medium (15×15), Hard (18×18) or Very Hard (20×20).',
 };
 
 export const getSimilarGames = (game, limit = 3) =>
